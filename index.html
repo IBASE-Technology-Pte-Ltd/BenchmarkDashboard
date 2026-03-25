@@ -240,6 +240,18 @@
   .legend-item { display: flex; align-items: center; gap: 6px; }
   .legend-swatch { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
 
+  /* Logo */
+  .header-logo {
+    display: block;
+    margin-bottom: 12px;
+  }
+  .header-logo img {
+    height: 36px;
+    width: auto;
+    display: block;
+    filter: brightness(0) invert(1);
+  }
+
   /* Footer */
   .footer {
     margin-top: 2.5rem;
@@ -255,6 +267,11 @@
     font-family: var(--font-display);
     font-size: 14px;
     color: var(--ink2);
+    text-decoration: none;
+  }
+  .footer-brand:hover {
+    color: var(--ink);
+    text-decoration: underline;
   }
   .footer-note {
     font-size: 11px;
@@ -273,6 +290,9 @@
 
 <header class="header">
   <div class="header-left">
+    <a href="https://www.qornerstone.com/" target="_blank" rel="noopener noreferrer" class="header-logo">
+      <img src="https://static.wixstatic.com/media/6b2781_ec5e2d7df8814b5291d35088e253389d~mv2.png/v1/fill/w_370,h_80,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/6b2781_ec5e2d7df8814b5291d35088e253389d~mv2.png" alt="Qornerstone">
+    </a>
     <div class="header-eyebrow">Qornerstone Platform · Singapore</div>
     <h1 class="header-title">Property Management<br>Company Overview</h1>
   </div>
@@ -478,7 +498,7 @@
   </div>
 
   <div class="footer">
-    <div class="footer-brand">Qornerstone · Singapore Property Management</div>
+    <a href="https://www.qornerstone.com/" target="_blank" rel="noopener noreferrer" class="footer-brand">Qornerstone · Singapore Property Management</a>
     <div class="footer-note">Data extracted March 2026 · For internal use only</div>
   </div>
 
