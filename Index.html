@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<!-- saved from url=(0131)file:///C:/Users/HongGuan/AppData/Local/Temp/MicrosoftEdgeDownloads/2cab8bcb-10d0-4957-9796-318570f4592d/qornerstone_dashboard.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qornerstone — Singapore Property Management Dashboard</title>
+<link href="./Qornerstone — Singapore Property Management Dashboard_files/css2" rel="stylesheet">
+<script src="./Qornerstone — Singapore Property Management Dashboard_files/chart.umd.js.download"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f3ee;
+    --surface: #ffffff;
+    --surface2: #edeae3;
+    --ink: #1a1814;
+    --ink2: #6b6760;
+    --ink3: #9e9b96;
+    --accent: #c8410a;
+    --accent2: #1a5c8f;
+    --border: rgba(26,24,20,0.1);
+    --radius: 12px;
+    --font-display: 'DM Serif Display', Georgia, serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .header {
+    background: var(--ink);
+    color: #f5f3ee;
+    padding: 2rem 2.5rem 1.75rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .header-left {}
+  .header-eyebrow {
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(245,243,238,.45);
+    margin-bottom: 6px;
+  }
+  .header-title {
+    font-family: var(--font-display);
+    font-size: 28px;
+    line-height: 1.15;
+    color: #f5f3ee;
+  }
+  .header-right {
+    text-align: right;
+  }
+  .header-sub {
+    font-size: 12px;
+    color: rgba(245,243,238,.45);
+  }
+  .header-date {
+    font-size: 13px;
+    color: rgba(245,243,238,.65);
+    margin-top: 2px;
+  }
+
+  /* Main layout */
+  .main { padding: 2rem 2.5rem; max-width: 1100px; margin: 0 auto; }
+
+  /* KPI cards */
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0,1fr));
+    gap: 12px;
+    margin-bottom: 2rem;
+  }
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.25rem 1rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--kpi-color, var(--ink));
+  }
+  .kpi-label {
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink3);
+    margin-bottom: 8px;
+  }
+  .kpi-value {
+    font-family: var(--font-display);
+    font-size: 26px;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .kpi-sub {
+    font-size: 11px;
+    color: var(--ink3);
+    margin-top: 6px;
+  }
+
+  /* Chart panel */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+  .panel-header {
+    padding: 1.25rem 1.5rem 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .panel-title {
+    font-family: var(--font-display);
+    font-size: 18px;
+    color: var(--ink);
+  }
+  .panel-desc {
+    font-size: 12px;
+    color: var(--ink3);
+    margin-top: 2px;
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    padding: 1rem 1.5rem 0;
+    flex-wrap: wrap;
+  }
+  .tab {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 400;
+    padding: 5px 14px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: transparent;
+    cursor: pointer;
+    color: var(--ink2);
+    transition: all .15s;
+  }
+  .tab:hover { background: var(--surface2); color: var(--ink); }
+  .tab.active {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+  }
+
+  /* Chart area */
+  .chart-area {
+    padding: 1rem 1.5rem 1.5rem;
+    position: relative;
+  }
+  .chart-wrap { position: relative; }
+
+  /* Insight box */
+  .insight {
+    margin: 0 1.5rem 1.25rem;
+    padding: 0.75rem 1rem;
+    background: var(--surface2);
+    border-radius: 8px;
+    font-size: 12.5px;
+    color: var(--ink2);
+    line-height: 1.65;
+    border-left: 3px solid var(--accent);
+  }
+  .insight strong { color: var(--ink); font-weight: 500; }
+
+  /* Bottom grid */
+  .bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  thead th {
+    text-align: left;
+    padding: 8px 12px;
+    font-size: 10px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink3);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+    font-weight: 400;
+  }
+  tbody td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink2);
+  }
+  tbody td:first-child { color: var(--ink); font-weight: 500; }
+  tbody tr:last-child td { border-bottom: none; font-weight: 500; color: var(--ink); background: var(--surface2); }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-weight: 400;
+  }
+  .tag-warn { background: #fef3c7; color: #92400e; }
+  .tag-ok { background: #d1fae5; color: #065f46; }
+  .tag-na { background: var(--surface2); color: var(--ink3); }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 0 1.5rem 0.5rem;
+    font-size: 12px;
+    color: var(--ink2);
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-swatch { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+  /* Footer */
+  .footer {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .footer-brand {
+    font-family: var(--font-display);
+    font-size: 14px;
+    color: var(--ink2);
+  }
+  .footer-note {
+    font-size: 11px;
+    color: var(--ink3);
+  }
+
+  @media (max-width: 700px) {
+    .kpis { grid-template-columns: 1fr 1fr; }
+    .bottom-grid { grid-template-columns: 1fr; }
+    .main { padding: 1.25rem; }
+    .header { padding: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <div class="header-eyebrow">Qornerstone Platform · Singapore</div>
+    <h1 class="header-title">Property Management<br>Company Overview</h1>
+  </div>
+  <div class="header-right">
+    <div class="header-sub">Extracted from Qornerstone Database</div>
+    <div class="header-date">Reporting period: Past 12 months · 13 companies</div>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- KPIs -->
+  <div class="kpis">
+    <div class="kpi" style="--kpi-color:#1a5c8f">
+      <div class="kpi-label">Active Tenant Contracts</div>
+      <div class="kpi-value">137,512</div>
+      <div class="kpi-sub">Across all companies</div>
+    </div>
+    <div class="kpi" style="--kpi-color:#3a7d54">
+      <div class="kpi-label">Supplier Contracts</div>
+      <div class="kpi-value">1,595</div>
+      <div class="kpi-sub">De-duplicated by company</div>
+    </div>
+    <div class="kpi" style="--kpi-color:#1a5c8f">
+      <div class="kpi-label">AR — 12 Month Total</div>
+      <div class="kpi-value">$610M</div>
+      <div class="kpi-sub">504,357 transactions</div>
+    </div>
+    <div class="kpi" style="--kpi-color:#c8410a">
+      <div class="kpi-label">AP — 12 Month Total</div>
+      <div class="kpi-value">$806M</div>
+      <div class="kpi-sub">164,279 transactions · $196M gap</div>
+    </div>
+  </div>
+
+  <!-- Main chart panel -->
+  <div class="panel">
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">Company Comparison</div>
+        <div class="panel-desc">Toggle metrics to compare across all 13 companies</div>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab" onclick="showChart(&#39;tenants&#39;,this)">Tenant Contracts</button>
+      <button class="tab" onclick="showChart(&#39;ar&#39;,this)">AR Volume</button>
+      <button class="tab" onclick="showChart(&#39;ap&#39;,this)">AP Volume</button>
+      <button class="tab active" onclick="showChart(&#39;arap&#39;,this)">AR vs AP</button>
+      <button class="tab" onclick="showChart(&#39;density&#39;,this)">Supplier Density</button>
+      <button class="tab" onclick="showChart(&#39;avgsize&#39;,this)">Avg Transaction</button>
+    </div>
+    <div id="legend" class="legend" style="margin-top:10px;"><span class="legend-item"><span class="legend-swatch" style="background:#1a5c8f"></span>AR</span><span class="legend-item"><span class="legend-swatch" style="background:#c8410a"></span>AP</span></div>
+    <div class="chart-area">
+      <div class="chart-wrap" id="chartWrap" style="height:560px;">
+        <canvas id="mainChart" style="box-sizing: border-box; display: block; height: 560px; width: 970px;" width="1213" height="700"></canvas>
+      </div>
+    </div>
+    <div class="insight" id="insight">AP exceeds AR at every company. The widest gaps: <strong>Chambers</strong> ($57.7M), <strong>Newman/SRE</strong> ($53.8M), <strong>ABSOLUT</strong> ($14.4M). Possible causes: maintenance capex cycles, intercompany flows, or timing lags.</div>
+  </div>
+
+  <!-- Bottom: table + notes -->
+  <div class="bottom-grid">
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">Full Data Table</div>
+          <div class="panel-desc">All companies · key metrics</div>
+        </div>
+      </div>
+      <div class="chart-area" style="padding-top:0.75rem;">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Company</th>
+                <th class="num">Tenants</th>
+                <th class="num">AR ($M)</th>
+                <th class="num">AP ($M)</th>
+                <th>Gap</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"><tr>
+      <td>A4</td>
+      <td class="num">2,969</td>
+      <td class="num">13.6</td>
+      <td class="num">20.0</td>
+      <td><span class="tag tag-na">+$6.5M</span></td>
+    </tr><tr>
+      <td>Abacus</td>
+      <td class="num">4,091</td>
+      <td class="num">10.9</td>
+      <td class="num">16.7</td>
+      <td><span class="tag tag-na">+$5.8M</span></td>
+    </tr><tr>
+      <td>ABSOLUT</td>
+      <td class="num">13,103</td>
+      <td class="num">67.7</td>
+      <td class="num">82.2</td>
+      <td><span class="tag tag-na">+$14.4M</span></td>
+    </tr><tr>
+      <td>Aprop</td>
+      <td class="num">3,820</td>
+      <td class="num">17.9</td>
+      <td class="num">32.8</td>
+      <td><span class="tag tag-na">+$14.9M</span></td>
+    </tr><tr>
+      <td>Chambers</td>
+      <td class="num">32,114</td>
+      <td class="num">138.9</td>
+      <td class="num">196.6</td>
+      <td><span class="tag tag-warn">+$57.7M</span></td>
+    </tr><tr>
+      <td>Kingston</td>
+      <td class="num">2,384</td>
+      <td class="num">9.4</td>
+      <td class="num">9.5</td>
+      <td><span class="tag tag-na">+$145K</span></td>
+    </tr><tr>
+      <td>Newman/SRE</td>
+      <td class="num">26,406</td>
+      <td class="num">131.3</td>
+      <td class="num">185.1</td>
+      <td><span class="tag tag-warn">+$53.8M</span></td>
+    </tr><tr>
+      <td>Ocean</td>
+      <td class="num">28,711</td>
+      <td class="num">110.2</td>
+      <td class="num">137.4</td>
+      <td><span class="tag tag-warn">+$27.2M</span></td>
+    </tr><tr>
+      <td>PFS</td>
+      <td class="num">7,042</td>
+      <td class="num">32.5</td>
+      <td class="num">40.7</td>
+      <td><span class="tag tag-na">+$8.2M</span></td>
+    </tr><tr>
+      <td>Phamous</td>
+      <td class="num">1,972</td>
+      <td class="num">10.5</td>
+      <td class="num">12.3</td>
+      <td><span class="tag tag-na">+$1.8M</span></td>
+    </tr><tr>
+      <td>TLMS</td>
+      <td class="num">426</td>
+      <td class="num">2.1</td>
+      <td class="num">2.4</td>
+      <td><span class="tag tag-na">+$347K</span></td>
+    </tr><tr>
+      <td>Wisely</td>
+      <td class="num">8,198</td>
+      <td class="num">39.9</td>
+      <td class="num">44.3</td>
+      <td><span class="tag tag-na">+$4.4M</span></td>
+    </tr><tr>
+      <td>All SAAS</td>
+      <td class="num">6,276</td>
+      <td class="num">25.1</td>
+      <td class="num">25.8</td>
+      <td><span class="tag tag-na">+$689K</span></td>
+    </tr><tr>
+      <td>Total</td>
+      <td class="num">137,512</td>
+      <td class="num">610.0</td>
+      <td class="num">805.9</td>
+      <td><span class="tag tag-warn">+$195.9M</span></td>
+    </tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">Key Observations</div>
+          <div class="panel-desc">Data-driven findings for review</div>
+        </div>
+      </div>
+      <div class="chart-area" style="padding-top:0.75rem;">
+        <div style="display:flex;flex-direction:column;gap:12px;" id="observations">
+  <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--surface2);border-radius:8px;border-left:3px solid #c8410a">
+    <span style="font-size:14px;line-height:1.4;flex-shrink:0;color:#c8410a">⚠</span>
+    <span style="font-size:12.5px;color:var(--ink2);line-height:1.6"><strong>$196M AP/AR gap</strong> platform-wide. AP consistently exceeds AR across all 13 companies.</span>
+  </div>
+  <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--surface2);border-radius:8px;border-left:3px solid #1a5c8f">
+    <span style="font-size:14px;line-height:1.4;flex-shrink:0;color:#1a5c8f">◎</span>
+    <span style="font-size:12.5px;color:var(--ink2);line-height:1.6"><strong>4 companies</strong> (ABSOLUT, Kingston, Newman/SRE, All SAAS) show zero supplier contracts — possible data gap.</span>
+  </div>
+  <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--surface2);border-radius:8px;border-left:3px solid #3a7d54">
+    <span style="font-size:14px;line-height:1.4;flex-shrink:0;color:#3a7d54">↑</span>
+    <span style="font-size:12.5px;color:var(--ink2);line-height:1.6"><strong>Chambers + Newman/SRE + Ocean</strong> account for ~73% of total AR and ~64% of all tenant contracts.</span>
+  </div>
+  <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--surface2);border-radius:8px;border-left:3px solid #7F77DD">
+    <span style="font-size:14px;line-height:1.4;flex-shrink:0;color:#7F77DD">◇</span>
+    <span style="font-size:12.5px;color:var(--ink2);line-height:1.6"><strong>TLMS</strong> (426 tenants) is the smallest company but maintains 62 supplier contracts — highest supplier density ratio.</span>
+  </div>
+  <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--surface2);border-radius:8px;border-left:3px solid #BA7517">
+    <span style="font-size:14px;line-height:1.4;flex-shrink:0;color:#BA7517">→</span>
+    <span style="font-size:12.5px;color:var(--ink2);line-height:1.6"><strong>Wisely</strong> has 479 supplier contracts for 8,198 tenants — prime candidate for supplier consolidation review.</span>
+  </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-brand">Qornerstone · Singapore Property Management</div>
+    <div class="footer-note">Data extracted March 2026 · For internal use only</div>
+  </div>
+
+</main>
+
+<script>
+const companies = ['A4','Abacus','ABSOLUT','Aprop','Chambers','Kingston','Newman/SRE','Ocean','PFS','Phamous','TLMS','Wisely','All SAAS','Total'];
+const tenants   = [2969,4091,13103,3820,32114,2384,26406,28711,7042,1972,426,8198,6276,137512];
+const suppliers = [224,117,0,100,579,0,0,20,2,12,62,479,0,1595];
+const arAmt     = [13564647,10943830,67734027,17882119,138936468,9372534,131292931,110242626,32513965,10450451,2079007,39869185,25130046,610011835];
+const apAmt     = [20022477,16701766,82179934,32830018,196649637,9517097,185120365,137437461,40698644,12265944,2426105,44252455,25819357,805921260];
+const arNo      = [13720,13695,70416,30814,13882,9081,130167,133284,8689,8190,2282,50058,20079,504357];
+const apNo      = [6044,1902,17415,3590,36113,1040,38058,30363,7552,2845,3193,10310,5854,164279];
+
+const palette = ['#1a5c8f','#2e86c1','#1d9e75','#7F77DD','#c8410a','#BA7517','#0F6E56','#639922','#993556','#888780','#A32D2D','#3a7d54','#534AB7'];
+
+const insights = {
+  tenants: '<strong>Chambers</strong> leads with 32,114 tenants, followed by <strong>Ocean</strong> (28,711) and <strong>Newman/SRE</strong> (26,406). Combined, the top 3 companies represent 63% of all tenant contracts.',
+  ar: '<strong>Chambers</strong> generates the highest AR at $139M. <strong>Newman/SRE</strong> leads in transaction count (130,167), indicating high-frequency, smaller-value billings versus Chambers\'s fewer, larger transactions.',
+  ap: '<strong>Chambers</strong> leads AP spend at $197M, followed by <strong>Newman/SRE</strong> at $185M. Every company\'s AP exceeds AR — the platform-wide gap is $196M and warrants cash-flow review.',
+  arap: 'AP exceeds AR at every company. The widest gaps: <strong>Chambers</strong> ($57.7M), <strong>Newman/SRE</strong> ($53.8M), <strong>ABSOLUT</strong> ($14.4M). Possible causes: maintenance capex cycles, intercompany flows, or timing lags.',
+  density: 'Supplier contracts per 1,000 tenants — a supply chain complexity proxy. <strong>Wisely</strong> (58.4) and <strong>Chambers</strong> (18.0) are most supplier-intensive. <strong>ABSOLUT, Kingston, Newman/SRE</strong> and <strong>All SAAS</strong> show zero contracts recorded.',
+  avgsize: '<strong>Chambers</strong> has the largest average AP transaction ($5,443), suggesting large vendor contracts. <strong>Kingston</strong> leads on average AR per transaction ($1,032). Comparing AR vs AP average sizes reveals billing vs payment pattern mismatches.'
+};
+
+function fmt(v) {
+  if (v >= 1e6) return '$' + (v/1e6).toFixed(1) + 'M';
+  if (v >= 1e3) return '$' + (v/1e3).toFixed(0) + 'K';
+  return '$' + v.toFixed(0);
+}
+
+function buildDatasets(key) {
+  const co = companies.slice(0,13);
+  if (key==='tenants') return { labels:co, datasets:[{ label:'Active Tenants', data:tenants.slice(0,13), backgroundColor:palette, borderRadius:4, borderSkipped:false }] };
+  if (key==='ar') return { labels:co, datasets:[{ label:'AR Amount', data:arAmt.slice(0,13), backgroundColor:'#1a5c8f', borderRadius:4, borderSkipped:false }] };
+  if (key==='ap') return { labels:co, datasets:[{ label:'AP Amount', data:apAmt.slice(0,13), backgroundColor:'#c8410a', borderRadius:4, borderSkipped:false }] };
+  if (key==='arap') return { labels:co, datasets:[
+    { label:'AR', data:arAmt.slice(0,13), backgroundColor:'#1a5c8f', borderRadius:4, borderSkipped:false },
+    { label:'AP', data:apAmt.slice(0,13), backgroundColor:'#c8410a', borderRadius:4, borderSkipped:false }
+  ]};
+  if (key==='density') {
+    const d = tenants.slice(0,13).map((t,i) => t>0 ? +(suppliers[i]/t*1000).toFixed(2) : 0);
+    return { labels:co, datasets:[{ label:'Supplier contracts per 1,000 tenants', data:d, backgroundColor:'#3a7d54', borderRadius:4, borderSkipped:false }] };
+  }
+  if (key==='avgsize') {
+    const avgAR = arNo.slice(0,13).map((n,i)=>n>0?arAmt[i]/n:0);
+    const avgAP = apNo.slice(0,13).map((n,i)=>n>0?apAmt[i]/n:0);
+    return { labels:co, datasets:[
+      { label:'Avg AR Transaction', data:avgAR, backgroundColor:'#1a5c8f', borderRadius:4, borderSkipped:false },
+      { label:'Avg AP Transaction', data:avgAP, backgroundColor:'#7F77DD', borderRadius:4, borderSkipped:false }
+    ]};
+  }
+}
+
+function renderLegend(datasets) {
+  const el = document.getElementById('legend');
+  if (datasets.length < 2) { el.innerHTML=''; return; }
+  el.innerHTML = datasets.map(ds => `<span class="legend-item"><span class="legend-swatch" style="background:${ds.backgroundColor}"></span>${ds.label}</span>`).join('');
+}
+
+let chart;
+function showChart(key, btn) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.getElementById('insight').innerHTML = insights[key];
+
+  const ds = buildDatasets(key);
+  renderLegend(ds.datasets);
+
+  if (chart) chart.destroy();
+  chart = new Chart(document.getElementById('mainChart'), {
+    type:'bar',
+    data: ds,
+    options:{
+      indexAxis:'y',
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{
+        legend:{ display:false },
+        tooltip:{
+          backgroundColor:'#1a1814',
+          titleColor:'#f5f3ee',
+          bodyColor:'rgba(245,243,238,.7)',
+          padding:10,
+          callbacks:{
+            label: ctx => {
+              const v = ctx.raw;
+              if (key==='tenants') return '  '+v.toLocaleString()+' tenants';
+              if (key==='density') return '  '+v.toFixed(2)+' per 1,000 tenants';
+              return '  '+fmt(v);
+            }
+          }
+        }
+      },
+      scales:{
+        x:{
+          ticks:{ color:'#9e9b96', font:{size:11,family:'DM Sans'}, callback: v => {
+            if (key==='tenants') return v>=1000?(v/1000).toFixed(0)+'K':v;
+            if (key==='density') return v.toFixed(0);
+            return fmt(v);
+          }},
+          grid:{ color:'rgba(26,24,20,0.06)' },
+          border:{ display:false }
+        },
+        y:{
+          ticks:{ color:'#6b6760', font:{size:12,family:'DM Sans'}, padding:4 },
+          grid:{ display:false },
+          border:{ display:false }
+        }
+      }
+    }
+  });
+}
+
+// Build table
+function buildTable() {
+  const tbody = document.getElementById('tableBody');
+  const rows = companies.map((c,i) => {
+    const ar = arAmt[i], ap = apAmt[i];
+    const gap = ap - ar;
+    const gapPct = ar > 0 ? ((gap/ar)*100).toFixed(0) : 'N/A';
+    let tagClass = 'tag-ok', tagText = 'Balanced';
+    if (gap > 20000000) { tagClass='tag-warn'; tagText='+'+fmt(gap); }
+    else if (gap > 0) { tagClass='tag-na'; tagText='+'+fmt(gap); }
+    else { tagClass='tag-ok'; tagText=fmt(gap); }
+    return `<tr>
+      <td>${c}</td>
+      <td class="num">${tenants[i].toLocaleString()}</td>
+      <td class="num">${(ar/1e6).toFixed(1)}</td>
+      <td class="num">${(ap/1e6).toFixed(1)}</td>
+      <td><span class="tag ${tagClass}">${tagText}</span></td>
+    </tr>`;
+  });
+  tbody.innerHTML = rows.join('');
+}
+
+// Key observations
+const obs = [
+  { icon:'⚠', color:'#c8410a', text:'<strong>$196M AP/AR gap</strong> platform-wide. AP consistently exceeds AR across all 13 companies.' },
+  { icon:'◎', color:'#1a5c8f', text:'<strong>4 companies</strong> (ABSOLUT, Kingston, Newman/SRE, All SAAS) show zero supplier contracts — possible data gap.' },
+  { icon:'↑', color:'#3a7d54', text:'<strong>Chambers + Newman/SRE + Ocean</strong> account for ~73% of total AR and ~64% of all tenant contracts.' },
+  { icon:'◇', color:'#7F77DD', text:'<strong>TLMS</strong> (426 tenants) is the smallest company but maintains 62 supplier contracts — highest supplier density ratio.' },
+  { icon:'→', color:'#BA7517', text:'<strong>Wisely</strong> has 479 supplier contracts for 8,198 tenants — prime candidate for supplier consolidation review.' },
+];
+document.getElementById('observations').innerHTML = obs.map(o => `
+  <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--surface2);border-radius:8px;border-left:3px solid ${o.color}">
+    <span style="font-size:14px;line-height:1.4;flex-shrink:0;color:${o.color}">${o.icon}</span>
+    <span style="font-size:12.5px;color:var(--ink2);line-height:1.6">${o.text}</span>
+  </div>`).join('');
+
+buildTable();
+showChart('tenants', document.querySelector('.tab.active'));
+</script>
+
+
+</body></html>
