@@ -77,7 +77,7 @@
   /* KPI cards */
   .kpis {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0,1fr));
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 12px;
     margin-bottom: 2rem;
   }
@@ -278,6 +278,44 @@
     color: var(--ink3);
   }
 
+  /* KPI secondary stat */
+  .kpi-delta {
+    font-size: 11px;
+    color: var(--ink3);
+    margin-top: 4px;
+    padding-top: 6px;
+    border-top: 1px solid var(--border);
+  }
+  .kpi-delta strong { color: var(--ink2); font-weight: 500; }
+
+  /* Executive Summary */
+  .exec-summary {
+    background: linear-gradient(135deg, #1a1814 0%, #2d2923 100%);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .exec-summary-title {
+    font-family: var(--font-display);
+    font-size: 13px;
+    color: rgba(245,243,238,.5);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .exec-summary-text {
+    font-size: 13px;
+    line-height: 1.8;
+    color: rgba(245,243,238,.82);
+  }
+  .exec-summary-text strong { color: #f5f3ee; }
+  .exec-summary-text .hl { color: #f0a050; font-weight: 500; }
+
+  /* AP/AR ratio cell colours */
+  .ratio-high { color: #c8410a; font-weight: 500; }
+  .ratio-med  { color: #BA7517; font-weight: 500; }
+  .ratio-ok   { color: #3a7d54; font-weight: 500; }
+
   @media (max-width: 700px) {
     .kpis { grid-template-columns: 1fr 1fr; }
     .bottom-grid { grid-template-columns: 1fr; }
@@ -310,22 +348,44 @@
       <div class="kpi-label">Active Tenant Contracts</div>
       <div class="kpi-value">137,512</div>
       <div class="kpi-sub">Across all companies</div>
+      <div class="kpi-delta">Top 3 companies = <strong>64%</strong> of market</div>
     </div>
     <div class="kpi" style="--kpi-color:#3a7d54">
       <div class="kpi-label">Supplier Contracts</div>
       <div class="kpi-value">1,595</div>
       <div class="kpi-sub">De-duplicated by company</div>
+      <div class="kpi-delta"><strong>4 companies</strong> record zero contracts</div>
     </div>
     <div class="kpi" style="--kpi-color:#1a5c8f">
       <div class="kpi-label">AR — 12 Month Total</div>
       <div class="kpi-value">$610M</div>
       <div class="kpi-sub">504,357 transactions</div>
+      <div class="kpi-delta">Avg <strong>$4,436</strong> per tenant/yr</div>
     </div>
     <div class="kpi" style="--kpi-color:#c8410a">
       <div class="kpi-label">AP — 12 Month Total</div>
       <div class="kpi-value">$806M</div>
       <div class="kpi-sub">164,279 transactions · $196M gap</div>
+      <div class="kpi-delta">AP/AR ratio: <strong>1.32×</strong> platform-wide</div>
     </div>
+    <div class="kpi" style="--kpi-color:#7F77DD">
+      <div class="kpi-label">Avg AR per Tenant</div>
+      <div class="kpi-value">$4,436</div>
+      <div class="kpi-sub">Per active contract / year</div>
+      <div class="kpi-delta">Range: <strong>$4K–$10K</strong> across companies</div>
+    </div>
+  </div>
+
+  <!-- Executive Summary -->
+  <div class="exec-summary">
+    <div class="exec-summary-title">Executive Summary</div>
+    <p class="exec-summary-text">
+      Across <strong>13 Singapore property management companies</strong>, total AR of <strong>$610M</strong> against AP of <strong>$806M</strong> reveals a <span class="hl">$196M (32%) platform-wide AP excess</span> — AP exceeds AR at every single company.
+      The market is highly concentrated: <strong>Chambers, Newman/SRE &amp; Ocean</strong> collectively hold 64% of tenant contracts and generate 62% of total AR.
+      <strong>Kingston</strong> is the only company operating near cash-flow parity (AP/AR: 1.01×), making it a useful efficiency benchmark.
+      <strong>Aprop</strong> carries the highest AP/AR ratio at <span class="hl">1.83×</span>, warranting closer review.
+      Four companies record <strong>zero supplier contracts</strong> — a data completeness risk that may understate true spend.
+    </p>
   </div>
 
   <!-- Main chart panel -->
@@ -337,12 +397,14 @@
       </div>
     </div>
     <div class="tabs">
-      <button class="tab" onclick="showChart(&#39;tenants&#39;,this)">Tenant Contracts</button>
-      <button class="tab" onclick="showChart(&#39;ar&#39;,this)">AR Volume</button>
-      <button class="tab" onclick="showChart(&#39;ap&#39;,this)">AP Volume</button>
-      <button class="tab active" onclick="showChart(&#39;arap&#39;,this)">AR vs AP</button>
-      <button class="tab" onclick="showChart(&#39;density&#39;,this)">Supplier Density</button>
-      <button class="tab" onclick="showChart(&#39;avgsize&#39;,this)">Avg Transaction</button>
+      <button class="tab" onclick="showChart('tenants',this)">Tenant Contracts</button>
+      <button class="tab" onclick="showChart('ar',this)">AR Volume</button>
+      <button class="tab" onclick="showChart('ap',this)">AP Volume</button>
+      <button class="tab active" onclick="showChart('arap',this)">AR vs AP</button>
+      <button class="tab" onclick="showChart('density',this)">Supplier Density</button>
+      <button class="tab" onclick="showChart('avgsize',this)">Avg Transaction</button>
+      <button class="tab" onclick="showChart('efficiency',this)">AR Efficiency</button>
+      <button class="tab" onclick="showChart('ratio',this)">AP/AR Ratio</button>
     </div>
     <div id="legend" class="legend" style="margin-top:10px;"><span class="legend-item"><span class="legend-swatch" style="background:#1a5c8f"></span>AR</span><span class="legend-item"><span class="legend-swatch" style="background:#c8410a"></span>AP</span></div>
     <div class="chart-area">
@@ -371,94 +433,11 @@
                 <th class="num">Tenants</th>
                 <th class="num">AR ($M)</th>
                 <th class="num">AP ($M)</th>
+                <th class="num">AP/AR</th>
                 <th>Gap</th>
               </tr>
             </thead>
-            <tbody id="tableBody"><tr>
-      <td>A4</td>
-      <td class="num">2,969</td>
-      <td class="num">13.6</td>
-      <td class="num">20.0</td>
-      <td><span class="tag tag-na">+$6.5M</span></td>
-    </tr><tr>
-      <td>Abacus</td>
-      <td class="num">4,091</td>
-      <td class="num">10.9</td>
-      <td class="num">16.7</td>
-      <td><span class="tag tag-na">+$5.8M</span></td>
-    </tr><tr>
-      <td>ABSOLUT</td>
-      <td class="num">13,103</td>
-      <td class="num">67.7</td>
-      <td class="num">82.2</td>
-      <td><span class="tag tag-na">+$14.4M</span></td>
-    </tr><tr>
-      <td>Aprop</td>
-      <td class="num">3,820</td>
-      <td class="num">17.9</td>
-      <td class="num">32.8</td>
-      <td><span class="tag tag-na">+$14.9M</span></td>
-    </tr><tr>
-      <td>Chambers</td>
-      <td class="num">32,114</td>
-      <td class="num">138.9</td>
-      <td class="num">196.6</td>
-      <td><span class="tag tag-warn">+$57.7M</span></td>
-    </tr><tr>
-      <td>Kingston</td>
-      <td class="num">2,384</td>
-      <td class="num">9.4</td>
-      <td class="num">9.5</td>
-      <td><span class="tag tag-na">+$145K</span></td>
-    </tr><tr>
-      <td>Newman/SRE</td>
-      <td class="num">26,406</td>
-      <td class="num">131.3</td>
-      <td class="num">185.1</td>
-      <td><span class="tag tag-warn">+$53.8M</span></td>
-    </tr><tr>
-      <td>Ocean</td>
-      <td class="num">28,711</td>
-      <td class="num">110.2</td>
-      <td class="num">137.4</td>
-      <td><span class="tag tag-warn">+$27.2M</span></td>
-    </tr><tr>
-      <td>PFS</td>
-      <td class="num">7,042</td>
-      <td class="num">32.5</td>
-      <td class="num">40.7</td>
-      <td><span class="tag tag-na">+$8.2M</span></td>
-    </tr><tr>
-      <td>Phamous</td>
-      <td class="num">1,972</td>
-      <td class="num">10.5</td>
-      <td class="num">12.3</td>
-      <td><span class="tag tag-na">+$1.8M</span></td>
-    </tr><tr>
-      <td>TLMS</td>
-      <td class="num">426</td>
-      <td class="num">2.1</td>
-      <td class="num">2.4</td>
-      <td><span class="tag tag-na">+$347K</span></td>
-    </tr><tr>
-      <td>Wisely</td>
-      <td class="num">8,198</td>
-      <td class="num">39.9</td>
-      <td class="num">44.3</td>
-      <td><span class="tag tag-na">+$4.4M</span></td>
-    </tr><tr>
-      <td>All SAAS</td>
-      <td class="num">6,276</td>
-      <td class="num">25.1</td>
-      <td class="num">25.8</td>
-      <td><span class="tag tag-na">+$689K</span></td>
-    </tr><tr>
-      <td>Total</td>
-      <td class="num">137,512</td>
-      <td class="num">610.0</td>
-      <td class="num">805.9</td>
-      <td><span class="tag tag-warn">+$195.9M</span></td>
-    </tr></tbody>
+            <tbody id="tableBody"></tbody>
           </table>
         </div>
       </div>
@@ -472,27 +451,7 @@
         </div>
       </div>
       <div class="chart-area" style="padding-top:0.75rem;">
-        <div style="display:flex;flex-direction:column;gap:12px;" id="observations">
-  <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--surface2);border-radius:8px;border-left:3px solid #c8410a">
-    <span style="font-size:14px;line-height:1.4;flex-shrink:0;color:#c8410a">⚠</span>
-    <span style="font-size:12.5px;color:var(--ink2);line-height:1.6"><strong>$196M AP/AR gap</strong> platform-wide. AP consistently exceeds AR across all 13 companies.</span>
-  </div>
-  <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--surface2);border-radius:8px;border-left:3px solid #1a5c8f">
-    <span style="font-size:14px;line-height:1.4;flex-shrink:0;color:#1a5c8f">◎</span>
-    <span style="font-size:12.5px;color:var(--ink2);line-height:1.6"><strong>4 companies</strong> (ABSOLUT, Kingston, Newman/SRE, All SAAS) show zero supplier contracts — possible data gap.</span>
-  </div>
-  <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--surface2);border-radius:8px;border-left:3px solid #3a7d54">
-    <span style="font-size:14px;line-height:1.4;flex-shrink:0;color:#3a7d54">↑</span>
-    <span style="font-size:12.5px;color:var(--ink2);line-height:1.6"><strong>Chambers + Newman/SRE + Ocean</strong> account for ~73% of total AR and ~64% of all tenant contracts.</span>
-  </div>
-  <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--surface2);border-radius:8px;border-left:3px solid #7F77DD">
-    <span style="font-size:14px;line-height:1.4;flex-shrink:0;color:#7F77DD">◇</span>
-    <span style="font-size:12.5px;color:var(--ink2);line-height:1.6"><strong>TLMS</strong> (426 tenants) is the smallest company but maintains 62 supplier contracts — highest supplier density ratio.</span>
-  </div>
-  <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--surface2);border-radius:8px;border-left:3px solid #BA7517">
-    <span style="font-size:14px;line-height:1.4;flex-shrink:0;color:#BA7517">→</span>
-    <span style="font-size:12.5px;color:var(--ink2);line-height:1.6"><strong>Wisely</strong> has 479 supplier contracts for 8,198 tenants — prime candidate for supplier consolidation review.</span>
-  </div></div>
+        <div style="display:flex;flex-direction:column;gap:12px;" id="observations"></div>
       </div>
     </div>
   </div>
@@ -521,7 +480,9 @@ const insights = {
   ap: '<strong>Chambers</strong> leads AP spend at $197M, followed by <strong>Newman/SRE</strong> at $185M. Every company\'s AP exceeds AR — the platform-wide gap is $196M and warrants cash-flow review.',
   arap: 'AP exceeds AR at every company. The widest gaps: <strong>Chambers</strong> ($57.7M), <strong>Newman/SRE</strong> ($53.8M), <strong>ABSOLUT</strong> ($14.4M). Possible causes: maintenance capex cycles, intercompany flows, or timing lags.',
   density: 'Supplier contracts per 1,000 tenants — a supply chain complexity proxy. <strong>Wisely</strong> (58.4) and <strong>Chambers</strong> (18.0) are most supplier-intensive. <strong>ABSOLUT, Kingston, Newman/SRE</strong> and <strong>All SAAS</strong> show zero contracts recorded.',
-  avgsize: '<strong>Chambers</strong> has the largest average AP transaction ($5,443), suggesting large vendor contracts. <strong>Kingston</strong> leads on average AR per transaction ($1,032). Comparing AR vs AP average sizes reveals billing vs payment pattern mismatches.'
+  avgsize: '<strong>Chambers</strong> has the largest average AP transaction ($5,443), suggesting large vendor contracts. <strong>Kingston</strong> leads on average AR per transaction ($1,032). Comparing AR vs AP average sizes reveals billing vs payment pattern mismatches.',
+  efficiency: '<strong>AR per tenant</strong> measures revenue intensity. <strong>Chambers</strong> leads at $4,324/tenant and <strong>Newman/SRE</strong> at $4,972/tenant. <strong>Phamous</strong> ($5,299) and <strong>All SAAS</strong> ($4,003) show distinct models. Outliers can indicate commercial-heavy portfolios or premium property tiers.',
+  ratio: 'AP/AR ratio shows cost-of-collection burden. <strong>Kingston</strong> (1.01×) is closest to parity. <strong>Aprop</strong> (1.83×) and <strong>Abacus</strong> (1.53×) carry the highest ratios — every $1 collected costs $1.53–$1.83 in outgoings. Ratios above 1.3× warrant cash-flow scrutiny.'
 };
 
 function fmt(v) {
@@ -550,6 +511,14 @@ function buildDatasets(key) {
       { label:'Avg AR Transaction', data:avgAR, backgroundColor:'#1a5c8f', borderRadius:4, borderSkipped:false },
       { label:'Avg AP Transaction', data:avgAP, backgroundColor:'#7F77DD', borderRadius:4, borderSkipped:false }
     ]};
+  }
+  if (key==='efficiency') {
+    const eff = tenants.slice(0,13).map((t,i)=>t>0?arAmt[i]/t:0);
+    return { labels:co, datasets:[{ label:'AR per Tenant ($)', data:eff, backgroundColor:palette, borderRadius:4, borderSkipped:false }] };
+  }
+  if (key==='ratio') {
+    const ratios = arAmt.slice(0,13).map((ar,i)=>ar>0?+(apAmt[i]/ar).toFixed(2):0);
+    return { labels:co, datasets:[{ label:'AP/AR Ratio', data:ratios, backgroundColor: ratios.map(r=>r>=1.5?'#c8410a':r>=1.2?'#BA7517':'#3a7d54'), borderRadius:4, borderSkipped:false }] };
   }
 }
 
@@ -588,6 +557,8 @@ function showChart(key, btn) {
               const v = ctx.raw;
               if (key==='tenants') return '  '+v.toLocaleString()+' tenants';
               if (key==='density') return '  '+v.toFixed(2)+' per 1,000 tenants';
+              if (key==='efficiency') return '  $'+Math.round(v).toLocaleString()+' per tenant';
+              if (key==='ratio') return '  '+v.toFixed(2)+'× (AP/AR)';
               return '  '+fmt(v);
             }
           }
@@ -598,6 +569,8 @@ function showChart(key, btn) {
           ticks:{ color:'#9e9b96', font:{size:11,family:'DM Sans'}, callback: v => {
             if (key==='tenants') return v>=1000?(v/1000).toFixed(0)+'K':v;
             if (key==='density') return v.toFixed(0);
+            if (key==='efficiency') return '$'+(v/1000).toFixed(1)+'K';
+            if (key==='ratio') return v.toFixed(1)+'×';
             return fmt(v);
           }},
           grid:{ color:'rgba(26,24,20,0.06)' },
@@ -619,7 +592,8 @@ function buildTable() {
   const rows = companies.map((c,i) => {
     const ar = arAmt[i], ap = apAmt[i];
     const gap = ap - ar;
-    const gapPct = ar > 0 ? ((gap/ar)*100).toFixed(0) : 'N/A';
+    const ratio = ar > 0 ? (ap/ar) : 0;
+    const ratioClass = ratio >= 1.5 ? 'ratio-high' : ratio >= 1.2 ? 'ratio-med' : 'ratio-ok';
     let tagClass = 'tag-ok', tagText = 'Balanced';
     if (gap > 20000000) { tagClass='tag-warn'; tagText='+'+fmt(gap); }
     else if (gap > 0) { tagClass='tag-na'; tagText='+'+fmt(gap); }
@@ -629,6 +603,7 @@ function buildTable() {
       <td class="num">${tenants[i].toLocaleString()}</td>
       <td class="num">${(ar/1e6).toFixed(1)}</td>
       <td class="num">${(ap/1e6).toFixed(1)}</td>
+      <td class="num ${ratioClass}">${ratio.toFixed(2)}×</td>
       <td><span class="tag ${tagClass}">${tagText}</span></td>
     </tr>`;
   });
@@ -642,6 +617,8 @@ const obs = [
   { icon:'↑', color:'#3a7d54', text:'<strong>Chambers + Newman/SRE + Ocean</strong> account for ~73% of total AR and ~64% of all tenant contracts.' },
   { icon:'◇', color:'#7F77DD', text:'<strong>TLMS</strong> (426 tenants) is the smallest company but maintains 62 supplier contracts — highest supplier density ratio.' },
   { icon:'→', color:'#BA7517', text:'<strong>Wisely</strong> has 479 supplier contracts for 8,198 tenants — prime candidate for supplier consolidation review.' },
+  { icon:'⚑', color:'#c8410a', text:'<strong>Aprop</strong> carries the highest AP/AR ratio at <strong>1.83×</strong> — every $1 collected incurs $1.83 in outgoings. Warrants cash-flow investigation.' },
+  { icon:'◈', color:'#1a5c8f', text:'<strong>Chambers</strong> average AR transaction is <strong>$10,009</strong> — 10× above the platform mean ($1,100) — reflecting commercial or industrial billing patterns.' },
 ];
 document.getElementById('observations').innerHTML = obs.map(o => `
   <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--surface2);border-radius:8px;border-left:3px solid ${o.color}">
@@ -650,7 +627,7 @@ document.getElementById('observations').innerHTML = obs.map(o => `
   </div>`).join('');
 
 buildTable();
-showChart('tenants', document.querySelector('.tab.active'));
+showChart('arap', document.querySelector('.tab.active'));
 </script>
 
 
