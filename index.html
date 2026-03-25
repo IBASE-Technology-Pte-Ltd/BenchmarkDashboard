@@ -472,6 +472,14 @@ const apAmt     = [20022477,16701766,82179934,32830018,196649637,9517097,1851203
 const arNo      = [13720,13695,70416,30814,13882,9081,130167,133284,8689,8190,2282,50058,20079,504357];
 const apNo      = [6044,1902,17415,3590,36113,1040,38058,30363,7552,2845,3193,10310,5854,164279];
 
+// TOTAL_IDX: index of the "Total" row in the data arrays
+const TOTAL_IDX = companies.length - 1;
+// COMPANY_COUNT: number of individual companies (excl. the Total row)
+const COMPANY_COUNT = TOTAL_IDX; // 13
+
+// Platform-wide average AR transaction value, computed from data
+const platformAvgARTx = Math.round(arAmt[TOTAL_IDX] / arNo[TOTAL_IDX]);
+
 const palette = ['#1a5c8f','#2e86c1','#1d9e75','#7F77DD','#c8410a','#BA7517','#0F6E56','#639922','#993556','#888780','#A32D2D','#3a7d54','#534AB7'];
 
 const insights = {
@@ -492,32 +500,32 @@ function fmt(v) {
 }
 
 function buildDatasets(key) {
-  const co = companies.slice(0,13);
-  if (key==='tenants') return { labels:co, datasets:[{ label:'Active Tenants', data:tenants.slice(0,13), backgroundColor:palette, borderRadius:4, borderSkipped:false }] };
-  if (key==='ar') return { labels:co, datasets:[{ label:'AR Amount', data:arAmt.slice(0,13), backgroundColor:'#1a5c8f', borderRadius:4, borderSkipped:false }] };
-  if (key==='ap') return { labels:co, datasets:[{ label:'AP Amount', data:apAmt.slice(0,13), backgroundColor:'#c8410a', borderRadius:4, borderSkipped:false }] };
+  const co = companies.slice(0,COMPANY_COUNT);
+  if (key==='tenants') return { labels:co, datasets:[{ label:'Active Tenants', data:tenants.slice(0,COMPANY_COUNT), backgroundColor:palette, borderRadius:4, borderSkipped:false }] };
+  if (key==='ar') return { labels:co, datasets:[{ label:'AR Amount', data:arAmt.slice(0,COMPANY_COUNT), backgroundColor:'#1a5c8f', borderRadius:4, borderSkipped:false }] };
+  if (key==='ap') return { labels:co, datasets:[{ label:'AP Amount', data:apAmt.slice(0,COMPANY_COUNT), backgroundColor:'#c8410a', borderRadius:4, borderSkipped:false }] };
   if (key==='arap') return { labels:co, datasets:[
-    { label:'AR', data:arAmt.slice(0,13), backgroundColor:'#1a5c8f', borderRadius:4, borderSkipped:false },
-    { label:'AP', data:apAmt.slice(0,13), backgroundColor:'#c8410a', borderRadius:4, borderSkipped:false }
+    { label:'AR', data:arAmt.slice(0,COMPANY_COUNT), backgroundColor:'#1a5c8f', borderRadius:4, borderSkipped:false },
+    { label:'AP', data:apAmt.slice(0,COMPANY_COUNT), backgroundColor:'#c8410a', borderRadius:4, borderSkipped:false }
   ]};
   if (key==='density') {
-    const d = tenants.slice(0,13).map((t,i) => t>0 ? +(suppliers[i]/t*1000).toFixed(2) : 0);
+    const d = tenants.slice(0,COMPANY_COUNT).map((t,i) => t>0 ? +(suppliers[i]/t*1000).toFixed(2) : 0);
     return { labels:co, datasets:[{ label:'Supplier contracts per 1,000 tenants', data:d, backgroundColor:'#3a7d54', borderRadius:4, borderSkipped:false }] };
   }
   if (key==='avgsize') {
-    const avgAR = arNo.slice(0,13).map((n,i)=>n>0?arAmt[i]/n:0);
-    const avgAP = apNo.slice(0,13).map((n,i)=>n>0?apAmt[i]/n:0);
+    const avgAR = arNo.slice(0,COMPANY_COUNT).map((n,i)=>n>0?arAmt[i]/n:0);
+    const avgAP = apNo.slice(0,COMPANY_COUNT).map((n,i)=>n>0?apAmt[i]/n:0);
     return { labels:co, datasets:[
       { label:'Avg AR Transaction', data:avgAR, backgroundColor:'#1a5c8f', borderRadius:4, borderSkipped:false },
       { label:'Avg AP Transaction', data:avgAP, backgroundColor:'#7F77DD', borderRadius:4, borderSkipped:false }
     ]};
   }
   if (key==='efficiency') {
-    const eff = tenants.slice(0,13).map((t,i)=>t>0?arAmt[i]/t:0);
+    const eff = tenants.slice(0,COMPANY_COUNT).map((t,i)=>t>0?arAmt[i]/t:0);
     return { labels:co, datasets:[{ label:'AR per Tenant ($)', data:eff, backgroundColor:palette, borderRadius:4, borderSkipped:false }] };
   }
   if (key==='ratio') {
-    const ratios = arAmt.slice(0,13).map((ar,i)=>ar>0?+(apAmt[i]/ar).toFixed(2):0);
+    const ratios = arAmt.slice(0,COMPANY_COUNT).map((ar,i)=>ar>0?+(apAmt[i]/ar).toFixed(2):0);
     return { labels:co, datasets:[{ label:'AP/AR Ratio', data:ratios, backgroundColor: ratios.map(r=>r>=1.5?'#c8410a':r>=1.2?'#BA7517':'#3a7d54'), borderRadius:4, borderSkipped:false }] };
   }
 }
@@ -610,15 +618,16 @@ function buildTable() {
   tbody.innerHTML = rows.join('');
 }
 
-// Key observations
+// Key observations (7th uses dynamically computed platform mean AR transaction)
+const chambersAvgARTx = Math.round(arAmt[4] / arNo[4]);
 const obs = [
-  { icon:'⚠', color:'#c8410a', text:'<strong>$196M AP/AR gap</strong> platform-wide. AP consistently exceeds AR across all 13 companies.' },
+  { icon:'⚠', color:'#c8410a', text:'<strong>$196M AP/AR gap</strong> platform-wide. AP consistently exceeds AR across all ' + COMPANY_COUNT + ' companies.' },
   { icon:'◎', color:'#1a5c8f', text:'<strong>4 companies</strong> (ABSOLUT, Kingston, Newman/SRE, All SAAS) show zero supplier contracts — possible data gap.' },
   { icon:'↑', color:'#3a7d54', text:'<strong>Chambers + Newman/SRE + Ocean</strong> account for ~73% of total AR and ~64% of all tenant contracts.' },
   { icon:'◇', color:'#7F77DD', text:'<strong>TLMS</strong> (426 tenants) is the smallest company but maintains 62 supplier contracts — highest supplier density ratio.' },
   { icon:'→', color:'#BA7517', text:'<strong>Wisely</strong> has 479 supplier contracts for 8,198 tenants — prime candidate for supplier consolidation review.' },
   { icon:'⚑', color:'#c8410a', text:'<strong>Aprop</strong> carries the highest AP/AR ratio at <strong>1.83×</strong> — every $1 collected incurs $1.83 in outgoings. Warrants cash-flow investigation.' },
-  { icon:'◈', color:'#1a5c8f', text:'<strong>Chambers</strong> average AR transaction is <strong>$10,009</strong> — 10× above the platform mean ($1,100) — reflecting commercial or industrial billing patterns.' },
+  { icon:'◈', color:'#1a5c8f', text:'<strong>Chambers</strong> average AR transaction is <strong>' + fmt(chambersAvgARTx) + '</strong> — ' + Math.round(chambersAvgARTx/platformAvgARTx) + '× above the platform mean (' + fmt(platformAvgARTx) + ') — reflecting commercial or industrial billing patterns.' },
 ];
 document.getElementById('observations').innerHTML = obs.map(o => `
   <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--surface2);border-radius:8px;border-left:3px solid ${o.color}">
